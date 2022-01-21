@@ -1,0 +1,39 @@
+.navigation_bar {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.navigation_icon {
+  margin-right: 0.75rem;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.navigation_bar__navlogo:link,
+.navigation_bar__navlogo:visited,
+.navigation_bar__navlink:link,
+.navigation_bar__navlink:visited {
+  margin: 1rem;
+  color: rgba(0, 0, 0, 0.8);
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.navigation_bar__navlogo:active,
+.navigation_bar__navlogo:hover {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.navigation_bar__navlink:active,
+.navigation_bar__navlink:hover {
+  color: rgba(0, 0, 0, 0.6);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.6);
+}
