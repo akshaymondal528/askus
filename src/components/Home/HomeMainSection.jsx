@@ -1,19 +1,57 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import db from '../../firebase';
+import {
+  onSnapshot,
+  collection,
+  serverTimestamp,
+  addDoc,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 import './HomeMainSection.css';
 
 const HomeMainSection = () => {
   const [questions, setQuestions] = useState([]);
-  const [input, setInput] = useState('');
+  const [questionInput, setQuestionInput] = useState('');
+  const [answers, setAnswers] = useState([]);
+  const [answerInput, setAnswerInput] = useState('');
 
-  const inputHandler = event => {
-    setInput(event.target.value);
+  const questionInputHandler = event => {
+    setQuestionInput(event.target.value);
   };
 
-  const clickHandler = e => {
+  const answerInputHandler = event => {
+    setAnswerInput(event.target.value);
+  };
+
+  const questionClickHandler = e => {
     e.preventDefault();
-    setQuestions([input, ...questions]);
-    setInput('');
+    // setQuestions([input, ...questions]);
+    addDoc(collection(db, 'questions'), {
+      question: questionInput,
+      timestamp: serverTimestamp(),
+    });
+    setQuestionInput('');
   };
+
+  const answerClickHandler = e => {
+    e.preventDefault();
+    setAnswers([answerInput, ...answers]);
+    // addDoc(collection(db, 'questions'), {
+    //   question: questionInput,
+    //   timestamp: serverTimestamp(),
+    // });
+    setAnswerInput('');
+  };
+
+  useEffect(() => {
+    onSnapshot(
+      query(collection(db, 'questions'), orderBy('timestamp', 'desc')),
+      snapshot => {
+        setQuestions(snapshot.docs.map(doc => doc.data().question));
+      }
+    );
+  }, []);
 
   return (
     <div className="home_main_section">
@@ -25,16 +63,9 @@ const HomeMainSection = () => {
               <div>
                 <h3 className="questions">{question}</h3>
               </div>
+              {/* {answers.map(answer => ( */}
               <div>
-                <p className="answers">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Quas, dolorem ipsa. Officia non error temporibus explicabo,
-                  ducimus iste repudiandae eius cum a? Sed corporis fugiat
-                  aliquam exercitationem ut perferendis deleniti in sequi cum
-                  explicabo perspiciatis aspernatur eum porro odit doloribus
-                  harum eos earum quibusdam totam fugit deserunt, distinctio
-                  saepe voluptas.
-                </p>
+                <p className="answers">{answers}</p>
                 <div>
                   <form>
                     <div className="answer_comment">
@@ -42,10 +73,16 @@ const HomeMainSection = () => {
                         <input
                           className="input_question__comment"
                           type="text"
+                          value={answerInput}
+                          onChange={answerInputHandler}
                         />
                       </div>
                       <div>
-                        <button className="input_question__btn" type="submit">
+                        <button
+                          className="input_question__btn"
+                          type="submit"
+                          onClick={answerClickHandler}
+                        >
                           Enter
                         </button>
                       </div>
@@ -53,6 +90,7 @@ const HomeMainSection = () => {
                   </form>
                 </div>
               </div>
+              {/* ))} */}
             </div>
           ))}
         </div>
@@ -66,13 +104,13 @@ const HomeMainSection = () => {
                 <input
                   className="input_question__input"
                   type="text"
-                  value={input}
-                  onChange={inputHandler}
+                  value={questionInput}
+                  onChange={questionInputHandler}
                 />
                 <button
                   className="input_question__btn"
                   type="submit"
-                  onClick={clickHandler}
+                  onClick={questionClickHandler}
                 >
                   Submit
                 </button>
